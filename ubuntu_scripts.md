@@ -23,7 +23,7 @@ $ source /tools/Xilinx/PetaLinux/20xx.x/settings.sh
 ```
 change dash to bash
 ```console
-    $ sudo dpkg-reconfigure bash
+$ sudo dpkg-reconfigure bash
 ```
 # MATLAB
 ```console
@@ -73,7 +73,7 @@ $ sudo systemctl enable containerd.service
 $ sudo snap install vlc
 ```
 ##	bing wallpaper
-	software: BingWall - Bing wallpaper of the day
+from software: BingWall - Bing wallpaper of the day
 ## Git configuration
 ```console
 $ git autocrlf
