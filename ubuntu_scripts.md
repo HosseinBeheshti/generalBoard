@@ -68,7 +68,7 @@ sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 ```
 # General
-## tor
+## Tor
 ```console
 sudo apt install tor
 ```
