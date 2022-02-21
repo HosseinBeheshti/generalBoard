@@ -68,6 +68,33 @@ sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 ```
 # General
+## tor
+```console
+sudo apt install tor
+```
+```console
+sudo vi /etc/tor/torrc
+```
+Find the line containing the following:
+```
+#ControlPort 9051
+```
+…and uncomment it. Next, find the following line:
+
+```
+#CookieAuthentication 1
+```
+Uncomment it, and change 1 to 0.
+
+Finally, restart the tor service:
+```console
+sudo /etc/init.d/tor restart
+```
+If you want to force Tor to generate a new circuit, and thus a new IP, use the following command:
+```console
+echo -e 'AUTHENTICATE ""\r\nsignal NEWNYM\r\nQUIT' | nc 127.0.0.1 9051
+```
+
 ## vlc
 ```console
 sudo snap install vlc
