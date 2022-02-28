@@ -94,7 +94,10 @@ If you want to force Tor to generate a new circuit, and thus a new IP, use the f
 ```console
 echo -e 'AUTHENTICATE ""\r\nsignal NEWNYM\r\nQUIT' | nc 127.0.0.1 9051
 ```
-
+remove from auto start
+```console
+sudo systemctl disable tor
+```
 ## vlc
 ```console
 sudo snap install vlc
