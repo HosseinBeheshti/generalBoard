@@ -67,6 +67,119 @@ Configure Docker to start on boot:
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 ```
+# GitLab runner
+Start by logging in to your server:
+```console
+ssh sammy@your_server_IP
+```
+In order to install the gitlab-runner service, you’ll add the official GitLab repository. Download and inspect the install script:
+```console
+curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh > script.deb.sh
+less script.deb.sh
+```
+Once you are satisfied with the safety of the script, run the installer:
+```console
+sudo bash script.deb.sh
+```
+Next install the gitlab-runner service:
+```console
+sudo apt install gitlab-runner
+```
+Verify the installation by checking the service status:
+```console
+systemctl status gitlab-runner
+```
+In your GitLab project, navigate to Settings > CI/CD > Runners.
+In the Set up a specific Runner manually section, you’ll find the registration token and the GitLab URL. Copy both to a text editor; you’ll need them for the next command. They will be referred to as `https://your_gitlab.com` and `project_token`.
+Back to your terminal, register the runner for your project:
+```console
+sudo gitlab-runner register -n --url https://your_gitlab.com --registration-token project_token --executor docker --description "Deployment Runner" --docker-image "docker:stable" --tag-list deployment --docker-privileged
+```
+The command options can be interpreted as follows:
+
+- `-n` executes the register command non-interactively (we specify all parameters as command options).
+- `--url` is the GitLab URL you copied from the runners page in GitLab.
+- `--registration-token` is the token you copied from the runners page in GitLab.
+- `--executor` is the executor type. docker executes each CI/CD job in a Docker container (see GitLab’s documentation on executors).
+- `--description` is the runner’s description, which will show up in GitLab.
+- `--docker-image` is the default Docker image to use in CI/CD jobs, if not explicitly specified.
+- `--tag-list` is a list of tags assigned to the runner. Tags can be used in a pipeline configuration to select specific runners for a CI/CD job. The deployment tag will allow you to refer to this specific runner to execute the deployment job.
+- --docker-privileged executes the Docker container created for each CI/CD job in privileged mode. A privileged container has access to all devices on the host machine and has nearly the same access to the host as processes running outside containers (see Docker’s documentation about runtime privilege and Linux capabilities). The reason for running in privileged mode is so you can use Docker-in-Docker (dind) to build a Docker image in your CI/CD pipeline. It is good practice to give a container the minimum requirements it needs. For you it is a requirement to run in privileged mode in order to use Docker-in-Docker. Be aware, you registered the runner for this specific project only, where you are in control of the commands being executed in the privileged container.
+After executing the gitlab-runner register command, you will receive the following output:
+```
+Output
+Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
+```
+## Creating a Deployment User
+On your server, create a new user:
+```console
+sudo adduser deployer
+```
+You’ll be guided through the user creation process. Enter a strong password and optionally any further user information you want to specify. Finally confirm the user creation with Y.
+Add the user to the Docker group:
+```console
+sudo usermod -aG docker deployer
+```
+## Setting Up an SSH Key
+You are going to create an SSH key for the deployment user. GitLab CI/CD will later use the key to log in to the server and perform the deployment routine.
+Let’s start by switching to the newly created deployer user for whom you’ll generate the SSH key:
+```console
+su deployer
+```
+To summarize, run the following command and confirm both questions with ENTER to create a 4096-bit SSH key and store it in the default location with an empty passphrase:
+```console
+ssh-keygen -b 4096
+```
+To authorize the SSH key for the deployer user, you need to append the public key to the authorized_keys file:
+```console
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+```
+## Storing the Private Key in a GitLab CI/CD Variable
+Start by showing the SSH private key:
+```console
+cat ~/.ssh/id_rsa
+```
+Copy the output to your clipboard. Make sure to add a linebreak after -----END RSA PRIVATE KEY-----:
+```console
+-----BEGIN RSA PRIVATE KEY-----
+...
+-----END RSA PRIVATE KEY-----
+```
+Now navigate to Settings > CI / CD > Variables in your GitLab project and click Add Variable. Fill out the form as follows:
+- Key: ID_RSA
+- Value: Paste your SSH private key from your clipboard (including a line break at the end).
+- Type: File
+- Environment Scope: All (default)
+- Protect variable: Checked
+- Mask variable: Unchecked
+
+Finally, create a variable with the login user. Click Add Variable and fill out the form as follows:
+- Key: SERVER_USER
+- Value: deployer
+- Type: Variable
+- Environment scope: All (default)
+- Protect variable: Checked
+- Mask variable: Checked
+
+## Configuring the `.gitlab-ci.yml` File
+To begin add the following:
+```console
+stages:
+  - publish
+  - deploy
+```
+When you want to combine this CD configuration with your existing CI pipeline, which tests and builds the app, you may want to add the publish and deploy stages after your existing stages, such that the deployment only takes place if the tests passed.
+```console
+. . .
+variables:
+  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+```
+
+- `CI_REGISTRY_IMAGE`: Represents the URL of the container registry tied to the specific project. This URL depends on the GitLab instance. For example, registry URLs for gitlab.com projects follow the pattern: registry.gitlab.com/your_user/your_project. But since GitLab will provide this variable, you do not need to know the exact URL.
+- `CI_COMMIT_REF_NAME`: The branch or tag name for which project is built.
+- `CI_COMMIT_SHORT_SHA`: The first eight characters of the commit revision for which the project is built.
+
 # General
 ## Tor
 ```console
