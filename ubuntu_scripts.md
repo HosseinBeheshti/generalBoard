@@ -116,16 +116,12 @@ After executing the gitlab-runner register command, you will receive the followi
 Output
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 ```
-## Creating a Deployment User
-On your server, create a new user:
+
+Add the user to the sudo group:
 ```console
-sudo adduser deployer
+sudo usermod -aG sudo gitlab-runner
 ```
-You’ll be guided through the user creation process. Enter a strong password and optionally any further user information you want to specify. Finally confirm the user creation with Y.
-Add the user to the Docker group:
-```console
-sudo usermod -aG docker deployer
-```
+
 ## Setting Up an SSH Key
 You are going to create an SSH key for the deployment user. GitLab CI/CD will later use the key to log in to the server and perform the deployment routine.
 Let’s start by switching to the newly created deployer user for whom you’ll generate the SSH key:
