@@ -98,7 +98,7 @@ Back to your terminal, register the runner for your project:
 sudo gitlab-runner register \
 -n --url https://your_gitlab.com \
 --registration-token project_token \
---executor docker \
+--executor "shell" \
 --description "Deployment Runner" \
 --tag-list deployment
 ```
