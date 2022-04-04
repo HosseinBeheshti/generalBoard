@@ -148,7 +148,7 @@ Copy the output to your clipboard. Make sure to add a linebreak after -----END R
 -----END RSA PRIVATE KEY-----
 ```
 Now navigate to Settings > CI / CD > Variables in your GitLab project and click Add Variable. Fill out the form as follows:
-- Key: ID_RSA
+- Key: `ID_RSA`
 - Value: Paste your SSH private key from your clipboard (including a line break at the end).
 - Type: File
 - Environment Scope: All (default)
