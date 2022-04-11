@@ -206,6 +206,10 @@ remove from auto start
 ```console
 sudo systemctl disable tor
 ```
+stop tor
+```console
+sudo systemctl stop tor
+```
 ## vlc
 ```console
 sudo snap install vlc
