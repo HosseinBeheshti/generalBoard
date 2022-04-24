@@ -68,29 +68,32 @@ sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 ```
 # GitLab runner
-Based on [digitalocean.com](https://www.digitalocean.com/community/tutorials/how-to-set-up-a-continuous-deployment-pipeline-with-gitlab-ci-cd-on-ubuntu-18-04).
 ## Registering a GitLab Runner
 Start by logging in to your server:
 ```console
 ssh sammy@your_server_IP
 ```
-In order to install the gitlab-runner service, you’ll add the official GitLab repository. Download and inspect the install script:
 ```console
-curl -L https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.deb.sh > script.deb.sh
-less script.deb.sh
+sudo curl -L --output /usr/local/bin/gitlab-runner "https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64"
 ```
-Once you are satisfied with the safety of the script, run the installer:
+
 ```console
-sudo bash script.deb.sh
+sudo chmod +x /usr/local/bin/gitlab-runner
 ```
-Next install the gitlab-runner service:
+
 ```console
-sudo apt install gitlab-runner
+sudo useradd --comment 'GitLab Runner' --create-home gitlab-runner --shell /bin/bash
 ```
-Verify the installation by checking the service status:
+
 ```console
-systemctl status gitlab-runner
+sudo rm /etc/systemd/system/gitlab-runner.service
 ```
+
+```console
+sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-r
+```
+
+
 In your GitLab project, navigate to Settings > CI/CD > Runners.
 In the Set up a specific Runner manually section, you’ll find the registration token and the GitLab URL. Copy both to a text editor; you’ll need them for the next command. They will be referred to as `https://your_gitlab.com` and `project_token`.
 Back to your terminal, register the runner for your project:
