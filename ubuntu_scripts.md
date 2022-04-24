@@ -92,6 +92,10 @@ sudo rm /etc/systemd/system/gitlab-runner.service
 sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-r
 ```
 
+```console
+sudo usermod -aG sudo gitlab-runner
+```
+
 ## Registering a GitLab Runner
 In your GitLab project, navigate to Settings > CI/CD > Runners.
 In the Set up a specific Runner manually section, you’ll find the registration token and the GitLab URL. Copy both to a text editor; you’ll need them for the next command. They will be referred to as `https://your_gitlab.com` and `project_token`.
@@ -126,9 +130,7 @@ if [ "$SHLVL" = 1 ]; then
     [ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
 fi
 ```
-```console
-sudo usermod -aG sudo gitlab-runner
-```
+
 # General
 ## Tor
 ```console
