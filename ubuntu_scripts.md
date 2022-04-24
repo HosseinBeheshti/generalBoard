@@ -68,10 +68,9 @@ sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 ```
 # GitLab runner
-## Registering a GitLab Runner
 Start by logging in to your server:
 ```console
-ssh sammy@your_server_IP
+ssh sammy@your_server_ip
 ```
 ```console
 sudo curl -L --output /usr/local/bin/gitlab-runner "https://gitlab-runner-downloads.s3.amazonaws.com/latest/binaries/gitlab-runner-linux-amd64"
@@ -93,7 +92,7 @@ sudo rm /etc/systemd/system/gitlab-runner.service
 sudo gitlab-runner install --user=gitlab-runner --working-directory=/home/gitlab-r
 ```
 
-
+## Registering a GitLab Runner
 In your GitLab project, navigate to Settings > CI/CD > Runners.
 In the Set up a specific Runner manually section, you’ll find the registration token and the GitLab URL. Copy both to a text editor; you’ll need them for the next command. They will be referred to as `https://your_gitlab.com` and `project_token`.
 Back to your terminal, register the runner for your project:
@@ -120,63 +119,14 @@ Output
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 ```
 
-Add the user to the sudo group:
-```console
-sudo usermod -aG sudo gitlab-runner
+NOTE: A common failure is when you have a .bash_logout that tries to clear the console. 
+comment this lines in `/home/gitlab-runner/.bash_logout`
+```
+if [ "$SHLVL" = 1 ]; then
+    [ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
+fi
 ```
 
-## Setting Up an SSH Key
-You are going to create an SSH key for the deployment user. GitLab CI/CD will later use the key to log in to the server and perform the deployment routine.
-Let’s start by switching to the newly created deployer user for whom you’ll generate the SSH key:
-```console
-su deployer
-```
-To summarize, run the following command and confirm both questions with ENTER to create a 4096-bit SSH key and store it in the default location with an empty passphrase:
-```console
-ssh-keygen -b 4096
-```
-To authorize the SSH key for the deployer user, you need to append the public key to the authorized_keys file:
-```console
-cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
-```
-## Storing the Private Key in a GitLab CI/CD Variable
-Start by showing the SSH private key:
-```console
-cat ~/.ssh/id_rsa
-```
-Copy the output to your clipboard. Make sure to add a linebreak after -----END RSA PRIVATE KEY-----:
-```console
------BEGIN RSA PRIVATE KEY-----
-...
------END RSA PRIVATE KEY-----
-```
-Now navigate to Settings > CI / CD > Variables in your GitLab project and click Add Variable. Fill out the form as follows:
-- Key: `ID_RSA`
-- Value: Paste your SSH private key from your clipboard (including a line break at the end).
-- Type: File
-- Environment Scope: All (default)
-- Protect variable: Checked
-- Mask variable: Unchecked
-
-
-A file containing the private key will be created on the runner for each CI/CD job and its path will be stored in the `$ID_RSA` environment variable.
-
-Create another variable with your server IP. Click Add Variable and fill out the form as follows:
-
-- Key: `SERVER_IP`
-- Value: `your_server_IP`
-- Type: Variable
-- Environment scope: All (default)
-- Protect variable: Checked
-- Mask variable: Checked
-
-Finally, create a variable with the login user. Click Add Variable and fill out the form as follows:
-- Key: `SERVER_USER`
-- Value: `deployer`
-- Type: Variable
-- Environment scope: All (default)
-- Protect variable: Checked
-- Mask variable: Checked
 
 # General
 ## Tor
