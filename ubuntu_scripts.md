@@ -126,8 +126,9 @@ if [ "$SHLVL" = 1 ]; then
     [ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
 fi
 ```
-
-
+```console
+sudo usermod -aG sudo gitlab-runner
+```
 # General
 ## Tor
 ```console
