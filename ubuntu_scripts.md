@@ -122,7 +122,12 @@ After executing the gitlab-runner register command, you will receive the followi
 Output
 Runner registered successfully. Feel free to start it, but if it's running already the config should be automatically reloaded!
 ```
-
+```console
+gitlab-runner verify 
+```
+```console
+gitlab-runner start
+```
 NOTE: A common failure is when you have a .bash_logout that tries to clear the console. 
 comment this lines in `/home/gitlab-runner/.bash_logout`
 ```
