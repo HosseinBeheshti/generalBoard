@@ -132,6 +132,15 @@ fi
 ```
 
 # General
+# Disable Ubuntu Sleep Mode
+Use the following command to disable sleep, hibernation and etc.  
+```console
+sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+```
+Then reboot the system and check if the changes have been effected using the command:  
+```console
+sudo systemctl status sleep.target suspend.target hibernate.target hybrid-sleep.target
+```
 ## Tor
 ```console
 sudo apt install tor
