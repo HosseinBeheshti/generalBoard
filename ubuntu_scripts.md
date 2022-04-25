@@ -130,7 +130,13 @@ if [ "$SHLVL" = 1 ]; then
     [ -x /usr/bin/clear_console ] && /usr/bin/clear_console -q
 fi
 ```
-
+##Uninstall
+```console
+sudo gitlab-runner uninstall
+sudo rm -rf /usr/local/bin/gitlab-runner
+sudo userdel gitlab-runner
+sudo rm -rf /home/gitlab-runner/
+```
 # General
 # Disable Ubuntu Sleep Mode
 Use the following command to disable sleep, hibernation and etc.  
