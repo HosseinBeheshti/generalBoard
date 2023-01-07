@@ -117,16 +117,20 @@ bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/insta
 ```
 
 # edit inbound
+```console
 listening ip: 127.0.0.1
 network: ws
+```
 
 # edite in v2rayng
+```console
 address: <my.domain.com>
 port: 443
 Network: ws
 request host: <my.domain.com>
 path: /downloader/<inpund_ip>
 tls: tls
+```
 
 
 # 8 Note
