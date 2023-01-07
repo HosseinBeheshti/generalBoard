@@ -56,11 +56,12 @@ vi /etc/nginx/sites-available/my.domain.com
 ```
 
 # 5.1 remove default values  
-
+```
 server_name <my.domain.com>;
+```
 
 # add another location
-
+```console
 location /downloader {
 
         if ($http_upgrade != "websocket") {
@@ -98,7 +99,8 @@ location /downloader {
         return 404;
 
     }
-	
+```
+
 # 5.2 restart NGINX service	
 ```console
 systemctl restart nginx
