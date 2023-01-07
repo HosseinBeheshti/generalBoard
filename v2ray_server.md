@@ -129,6 +129,6 @@ path: /downloader/<inpund_ip>
 tls: tls
 
 
-#8 Note
+# 8 Note
 if you want to use cdn, then use 127.0.0.1 in listening ip for users
 
