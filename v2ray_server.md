@@ -1,72 +1,132 @@
-# install core
-Update
+
+--------------------------------------------------------------------------
+Referense Link: https://telegra.ph/reverse-proxy-on-nginx-for-x-ui-11-08
+--------------------------------------------------------------------------
+
+# 0 update server
 ```console
 apt update && apt upgrade -y
 ```	
 
+# 1 Firewall Settings
 ```console
-curl https://raw.githubusercontent.com/SonyaCore/V2RayGen/main/V2RayGen.py | sudo python3 - --vmess
-```	
-
-Or:
-
-# 1 firewall settings
-```console
-sudo ufw status
+apt install ufw -y
 ```
 
-# 2
 ```console
-sudo ufw allow ssh
-sudo ufw allow http
-sudo ufw allow https
-sudo ufw allow ????/tcp
-```
-
-# enable firewall
-```console
-sudo ufw enable
-```
-# firewall status
-```console
-sudo ufw status
-```
-
-# 3
-```console
-sudo apt-get update -y 
-sudo apt-get upgrade -y
-sudo apt install curl -y
-```
-
-# 4 X-UI (https://github.com/hossinasaadi/x-ui)
-```console
-bash <(curl -Ls https://raw.githubusercontent.com/hossinasaadi/x-ui/master/install.sh)
-```	
-
-# 5 install certbot
-```console
-sudo apt install software-properties-common
-sudo add-apt-repository ppa:certbot/certbot
-sudo apt-get install certbot
+ufw allow 22
+ufw allow 80
+ufw allow 443
+ufw allow <port of xui>
 ```
 
 
-# 6  Use certbot to get SSL Certificate.
 ```console
-sudo certbot certonly --standalone --preferred-challenges http --agree-tos --email <your-email-address> -d <test.example.com>
+ufw enable
+ufw status
 ```
 
-# Note both paths
-/etc/letsencrypt/live/test.example.com/fullchain.pem
-/etc/letsencrypt/live/test.example.com/privkey.pem
-
-# 7 renew ssl certificate
 ```console
-certbot renew --force-renewal
+ufw disable
 ```
 
-# 8 Install Google BBR using BBR script
+# 2 install NGINX & Certbot
 ```console
-wget -N --no-check-certificate https://github.com/teddysun/across/raw/master/bbr.sh && chmod +x bbr.sh && bash bbr.sh
+sudo apt install nginx certbot python3-certbot-nginx -y
 ```
+
+# 3 copy default NGINX config to your website
+```console
+cp /etc/nginx/sites-available/default /etc/nginx/sites-available/my.domain.com
+```
+
+# 4 enable your website 
+```console
+ln -s /etc/nginx/sites-available/my.domain.com /etc/nginx/sites-enabled/
+```
+
+
+```console
+cd /etc/nginx/sites-enabled && ls -la
+```
+
+# 5 edit your website config file and edit as below
+```console
+vi /etc/nginx/sites-available/my.domain.com
+```
+
+# 5.1 remove default values  
+
+server_name <my.domain.com>;
+
+# add another location
+
+location /downloader {
+
+        if ($http_upgrade != "websocket") {
+
+            return 404;
+
+        }
+
+        location ~ /downloader/\d\d\d\d\d$ {
+
+            if ($request_uri ~* "([^/]*$)" ) {
+
+                set $port $1;
+
+            }
+
+            proxy_redirect off;
+
+            proxy_pass http://127.0.0.1:$port/;
+
+            proxy_http_version 1.1;
+
+            proxy_set_header Upgrade $http_upgrade;
+
+            proxy_set_header Connection "upgrade";
+
+            proxy_set_header Host $host;
+
+            proxy_set_header X-Real-IP $remote_addr;
+
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        }
+
+        return 404;
+
+    }
+	
+# 5.2 restart NGINX service	
+```console
+systemctl restart nginx
+```
+
+# 6 get a free SSL 
+```console
+certbot --nginx -d <my.domain.com> --register-unsafely-without-email
+```
+
+# 7 install xRay panel FranzKafkaYu "https://github.com/FranzKafkaYu/x-ui/blob/main/README_EN.md"
+```console
+bash <(curl -Ls https://raw.githubusercontent.com/FranzKafkaYu/x-ui/master/install_en.sh)
+```
+
+# edit inbound
+listening ip: 127.0.0.1
+network: ws
+
+# edite in v2rayng
+address: <my.domain.com>
+port: 443
+Network: ws
+request host: <my.domain.com>
+path: /downloader/<inpund_ip>
+tls: tls
+
+
+#8 Note
+if you want to use cdn, then use 127.0.0.1 in listening ip for users
+
