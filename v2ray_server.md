@@ -37,12 +37,12 @@ sudo apt install nginx certbot python3-certbot-nginx -y
 
 # 3 copy default NGINX config to your website
 ```console
-cp /etc/nginx/sites-available/default /etc/nginx/sites-available/my.domain.com
+cp /etc/nginx/sites-available/default /etc/nginx/sites-available/hbv2ray.tk
 ```
 
 # 4 enable your website 
 ```console
-ln -s /etc/nginx/sites-available/my.domain.com /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/hbv2ray.tk /etc/nginx/sites-enabled/
 ```
 
 
@@ -52,12 +52,12 @@ cd /etc/nginx/sites-enabled && ls -la
 
 # 5 edit your website config file and edit as below
 ```console
-vi /etc/nginx/sites-available/my.domain.com
+vi /etc/nginx/sites-available/hbv2ray.tk
 ```
 
 # 5.1 remove default values  
 ```
-server_name <my.domain.com>;
+server_name hbv2ray.tk;
 ```
 
 # add another location
@@ -108,7 +108,7 @@ systemctl restart nginx
 
 # 6 get a free SSL 
 ```console
-certbot --nginx -d <my.domain.com> --register-unsafely-without-email
+certbot --nginx -d hbv2ray.tk --register-unsafely-without-email
 ```
 
 # 7 install xRay panel FranzKafkaYu "https://github.com/FranzKafkaYu/x-ui/blob/main/README_EN.md"
@@ -124,11 +124,11 @@ network: ws
 
 # edite in v2rayng
 ```console
-address: <my.domain.com>
+address: hbv2ray.tk
 port: 443
 Network: ws
-request host: <my.domain.com>
-path: /downloader/<inpund_ip>
+request host: hbv2ray.tk
+path: /downloader/<inpund_port>
 tls: tls
 ```
 
