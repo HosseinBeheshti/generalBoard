@@ -210,3 +210,12 @@ sudo apt install x2goserver x2goserver-xsession
 sudo add-apt-repository ppa:touchegg/stable
 sudo apt install touchegg
 ```
+
+## vpn
+```console
+sudo add-apt-repository ppa:nm-l2tp/network-manager-l2tp
+sudo apt-get update
+sudo apt-get install network-manager-l2tp  network-manager-l2tp-gnome
+```
+
+
