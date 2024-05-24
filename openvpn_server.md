@@ -1,17 +1,38 @@
 
---------------------------------------------------------------------------
-Referense Link: https://telegra.ph/reverse-proxy-on-nginx-for-x-ui-11-08
---------------------------------------------------------------------------
+# Installation on Ubuntu 22
 
-# 0 update server
-```console
-apt update && apt upgrade -y
-```	
+https://as-portal.openvpn.com/
 
-# 1 Firewall Settings
+## 1 
 ```console
-apt install ufw -y
+apt update && apt -y install ca-certificates wget net-tools gnupg
 ```
+
+## 2 
+```console
+wget https://as-repository.openvpn.net/as-repo-public.asc -qO /etc/apt/trusted.gpg.d/as-repository.asc
+```
+
+## 3 
+```console
+echo "deb [arch=amd64 signed-by=/etc/apt/trusted.gpg.d/as-repository.asc] http://as-repository.openvpn.net/as/debian jammy main">/etc/apt/sources.list.d/openvpn-as-repo.list
+```
+
+## 4 
+```console
+apt update && apt -y install openvpn-as
+```
+
+After these steps, your Access Server should be installed and awaiting further configuration.
+
+## 1 
+```console
+
+```
+
+
+
+
 
 ```console
 ufw allow 22
