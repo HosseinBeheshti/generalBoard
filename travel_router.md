@@ -1,5 +1,53 @@
 
-# Installation on Ubuntu 22
+# OpenVPN Installation on Ubuntu 22
+https://docs.onion.io/omega2-docs/boot-from-external-storage.html
+
+## 1 
+format USB stick to ext4
+
+## 2
+```console
+mount /dev/sda1 /mnt/ ; tar -C /overlay -cvf - . | tar -C /mnt/ -xf - ; umount /mnt/
+```
+## 3 install block-mount
+
+```console
+opkg update
+```
+
+```console
+opkg install block-mount
+```
+
+## 4 automatically mount
+```console
+block detect > /etc/config/fstab
+```
+
+
+```console
+vi /etc/config/fstab
+```
+
+Look for the line
+
+option  target  '/mnt/<device name>'
+and change it to:
+
+option target '/overlay'
+Then, look for the line:
+
+option  enabled '0'
+and change it to
+
+option  enabled '1'
+
+
+```console
+reboot
+```
+
+# OpenVPN Installation on Ubuntu 22
 
 https://as-portal.openvpn.com/
 
