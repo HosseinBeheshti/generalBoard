@@ -30,17 +30,25 @@ vi /etc/config/fstab
 ```
 
 Look for the line
-
+```
 option  target  '/mnt/<device name>'
+```
 and change it to:
 
+```
 option target '/overlay'
+```
 Then, look for the line:
 
+```
 option  enabled '0'
+
+```
 and change it to
 
+```
 option  enabled '1'
+```
 
 
 ```console
